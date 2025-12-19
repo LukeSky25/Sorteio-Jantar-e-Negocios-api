@@ -56,6 +56,22 @@ app.get("/files", async (req, res) => {
   }
 });
 
+// Mostra todos os nomes dentro da lista de brindes
+
+app.get("/lista-brindes", async (req, res) => {
+  try {
+    const conteudo = await readFile("brindes.txt");
+
+    const linhas = conteudo.split("\n").filter(Boolean);
+
+    res.json(linhas);
+  } catch (error) {
+    res.json([]);
+    res.status(500).json({ erro: error.message });
+    console.log(error);
+  }
+});
+
 // Lê o arquivo apartir do nome dentro da pasta /uploads e retorna um json do conteúdo
 
 app.get("/arquivo/:nome", async (req, res) => {
@@ -65,6 +81,20 @@ app.get("/arquivo/:nome", async (req, res) => {
 
     const Json_data = JSON.parse(conteudo);
     res.json(Json_data);
+  } catch (error) {
+    res.status(500).json({ erro: error.message });
+  }
+});
+
+// Salva a lista de brindes
+
+app.post("/escrever-brindes", async (req, res) => {
+  try {
+    const dados = req.body;
+    const textoOriginal = dados.join("\n");
+
+    const arquivoFinal = await writeFiles("brindes.txt", textoOriginal);
+    res.json({ mensagem: "Lista de brindes salva", arquivoFinal });
   } catch (error) {
     res.status(500).json({ erro: error.message });
   }
