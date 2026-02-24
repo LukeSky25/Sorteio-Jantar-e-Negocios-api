@@ -224,19 +224,25 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
       rodadaAtual = 1;
     }
 
-    // 2. Verificar se existe VENCEDOR FIXO para esta rodada
-    let fixoParaRodada = null;
+    // 2. Verificar VENCEDORES FIXOS
+    let fixosDestaRodada = [];
+    let nomesTodosFixos = []; // Array com todos os nomes fixos para não caírem no aleatório
+
     try {
       const cFixos = await readFile(fileFixos);
       const listaFixos = JSON.parse(cFixos);
-      const encontrado = listaFixos.find(
+
+      // Guarda o nome de todos os fixos cadastrados (de todas as rodadas) para isolá-los
+      nomesTodosFixos = listaFixos.map((f) => f.nome.toLowerCase().trim());
+
+      // Pega TODOS os fixos da rodada atual (usando filter em vez de find)
+      fixosDestaRodada = listaFixos.filter(
         (f) => parseInt(f.rodada) === rodadaAtual,
       );
-      if (encontrado) fixoParaRodada = encontrado;
     } catch (e) {}
 
     const resultadoStrings = [];
-    const sorteados = []; // Array auxiliar para controle
+    const sorteados = [];
 
     // Carrega brindes
     let brindes = [];
@@ -247,90 +253,75 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
       brindes = [];
     }
 
-    // --- PASSO A: PROCESSAR VENCEDOR FIXO (SE HOUVER) ---
-    if (fixoParaRodada) {
-      // Acha o nome na lista
-      const ganhadorIndex = nomes.findIndex(
-        (p) =>
-          p.nome.toLowerCase().trim() ===
-          fixoParaRodada.nome.toLowerCase().trim(),
-      );
-      let ganhadorObj;
+    // --- PASSO A: PROCESSAR VENCEDOR(ES) FIXO(S) DA RODADA ---
+    for (const fixo of fixosDestaRodada) {
+      if (sorteados.length >= quantidade) break; // Respeita a quantidade de sorteios do botão
 
+      const nomeFixoFormatado = fixo.nome.toLowerCase().trim();
+      const ganhadorIndex = nomes.findIndex(
+        (p) => p.nome.toLowerCase().trim() === nomeFixoFormatado,
+      );
+
+      let ganhadorObj;
       if (ganhadorIndex !== -1) {
         ganhadorObj = nomes[ganhadorIndex];
-        nomes[ganhadorIndex].list = true; // Marca como sorteado no arquivo geral
+        nomes[ganhadorIndex].list = true;
       } else {
-        // Cria objeto temporário se não estiver na lista
-        ganhadorObj = { nome: fixoParaRodada.nome, list: true };
+        ganhadorObj = { nome: fixo.nome, list: true };
       }
 
-      // Tenta reservar o prêmio específico
-      let premioNome = fixoParaRodada.premio;
+      let premioNome = fixo.premio;
 
-      // Procura esse prêmio na lista para marcar como indisponível
+      // Busca e reserva o prêmio exato na lista de brindes
       const indexBrinde = brindes.findIndex(
         (b) =>
           b.nome.toLowerCase().trim() === premioNome.toLowerCase().trim() &&
           b.disponivel,
       );
+
       if (indexBrinde !== -1) {
         brindes[indexBrinde].disponivel = false;
       }
 
-      // Adiciona à lista de sorteados DESTA vez
       sorteados.push(ganhadorObj);
       resultadoStrings.push(`${ganhadorObj.nome} - ${premioNome}`);
     }
 
     // --- PASSO B: COMPLETAR COM ALEATÓRIOS ---
-    // Recalcula candidatos disponíveis (excluindo o fixo que acabamos de marcar)
-    const candidatos = nomes.filter((p) => p.list === false);
+    // Filtra candidatos removendo quem já foi sorteado E quem for ganhador fixo (independente da rodada)
+    const candidatos = nomes.filter(
+      (p) =>
+        p.list === false &&
+        !nomesTodosFixos.includes(p.nome.toLowerCase().trim()),
+    );
 
-    // Filtra brindes que sobraram
     let brindesDisponiveis = brindes.filter((b) => b.disponivel === true);
 
-    const usadosNestaRodada = new Set();
+    // Embaralha os candidatos restantes (Evita o problema de loop infinito do Math.random + while)
+    const candidatosEmbaralhados = candidatos.sort(() => Math.random() - 0.5);
+    let idxCandidato = 0;
 
-    // O loop continua enquanto não atingir a quantidade total solicitada
     while (
       sorteados.length < quantidade &&
-      usadosNestaRodada.size < candidatos.length
+      idxCandidato < candidatosEmbaralhados.length
     ) {
-      let i = Math.floor(Math.random() * candidatos.length);
+      const ganhador = candidatosEmbaralhados[idxCandidato];
+      idxCandidato++;
 
-      // Garante que não pega o mesmo índice duas vezes nesta mesma batelada
-      while (
-        usadosNestaRodada.has(i) &&
-        usadosNestaRodada.size < candidatos.length
-      ) {
-        i = Math.floor(Math.random() * candidatos.length);
+      let premioNome = "Sem prêmio cadastrado";
+      const premioDaVez = brindesDisponiveis.shift(); // Pega sempre o próximo brinde livre
+
+      if (premioDaVez) {
+        premioNome = premioDaVez.nome;
+        const indexOriginal = brindes.findIndex((b) => b.id === premioDaVez.id);
+        if (indexOriginal !== -1) brindes[indexOriginal].disponivel = false;
       }
 
-      if (!usadosNestaRodada.has(i)) {
-        usadosNestaRodada.add(i);
-        const ganhador = candidatos[i];
-
-        // Pega o próximo prêmio da fila
-        let premioNome = "Sem prêmio cadastrado";
-        const premioDaVez = brindesDisponiveis.shift(); // Remove o primeiro da fila
-
-        if (premioDaVez) {
-          premioNome = premioDaVez.nome;
-          const indexOriginal = brindes.findIndex(
-            (b) => b.id === premioDaVez.id,
-          );
-          if (indexOriginal !== -1) brindes[indexOriginal].disponivel = false;
-        }
-
-        sorteados.push(ganhador);
-        resultadoStrings.push(`${ganhador.nome} - ${premioNome}`);
-      } else {
-        break;
-      }
+      sorteados.push(ganhador);
+      resultadoStrings.push(`${ganhador.nome} - ${premioNome}`);
     }
 
-    // Atualiza a lista geral de nomes
+    // Atualiza a lista geral de nomes marcando quem foi sorteado de fato
     nomes.forEach((pessoa) => {
       if (sorteados.some((s) => s.nome === pessoa.nome)) pessoa.list = true;
     });

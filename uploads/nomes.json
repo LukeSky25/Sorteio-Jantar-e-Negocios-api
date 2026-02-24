@@ -1,7 +1,7 @@
 [
     {
         "nome": "ALEXANDRE CAMPOLI",
-        "list": true
+        "list": false
     },
     {
         "nome": "ALEXANDRE TADEU ZANAROTO",
@@ -9,7 +9,7 @@
     },
     {
         "nome": "AMARILDO OLIVEIRA",
-        "list": true
+        "list": false
     },
     {
         "nome": "AMÉRICO BONFIM JÚNIOR",
@@ -17,7 +17,7 @@
     },
     {
         "nome": "ANDERSON GOMES",
-        "list": true
+        "list": false
     },
     {
         "nome": "ANDRÉIA SCRAMIGNON",
@@ -37,11 +37,11 @@
     },
     {
         "nome": "AUGUSTO BARRETO",
-        "list": true
+        "list": false
     },
     {
         "nome": "AYO MIRANDA",
-        "list": true
+        "list": false
     },
     {
         "nome": "BRUNA ZECCHINATO",
@@ -137,7 +137,7 @@
     },
     {
         "nome": "FERNANDA INÁCIO MACEDO",
-        "list": true
+        "list": false
     },
     {
         "nome": "FERNANDO NOGUEIRA",
@@ -213,7 +213,7 @@
     },
     {
         "nome": "JOSÉ ROBERTO SILVA",
-        "list": true
+        "list": false
     },
     {
         "nome": "JOSÉ RODRIGO",
@@ -233,7 +233,7 @@
     },
     {
         "nome": "KRISTIELLE OLIVEIRA FONSECA",
-        "list": true
+        "list": false
     },
     {
         "nome": "LAÉRCIO J NICOLAU",
@@ -253,7 +253,7 @@
     },
     {
         "nome": "LETICIA MARTINS",
-        "list": true
+        "list": false
     },
     {
         "nome": "LUCI DAMIAN",
@@ -269,11 +269,11 @@
     },
     {
         "nome": "MARCELO FERREIRA",
-        "list": true
+        "list": false
     },
     {
         "nome": "MARCO ANTONIO ZANFOLIM",
-        "list": true
+        "list": false
     },
     {
         "nome": "MARCO PEREZ",
@@ -297,7 +297,7 @@
     },
     {
         "nome": "MARLI GALDIANO",
-        "list": true
+        "list": false
     },
     {
         "nome": "MAURO DOTTORI",
@@ -393,7 +393,7 @@
     },
     {
         "nome": "VALÉRIA CASALE",
-        "list": true
+        "list": false
     },
     {
         "nome": "VÂNIA MENEZES",
@@ -441,7 +441,7 @@
     },
     {
         "nome": "RUBENS MANUEL",
-        "list": true
+        "list": false
     },
     {
         "nome": "CAIO GOMES",
@@ -449,7 +449,7 @@
     },
     {
         "nome": "ROBERTO OLIVEIRA",
-        "list": true
+        "list": false
     },
     {
         "nome": "ÁLESSANDRO TEIXEIRA",
@@ -497,7 +497,7 @@
     },
     {
         "nome": "LUCAS LUCENA",
-        "list": true
+        "list": false
     },
     {
         "nome": "HEDINAN RIBEIRO",

@@ -5,8 +5,18 @@
         "premio": "Air Fryer Mondial"
     },
     {
+        "rodada": 2,
+        "nome": "ALEXANDRE CAMPOLI",
+        "premio": "Fone de Ouvido Aiwa"
+    },
+    {
+        "rodada": 2,
+        "nome": "AMARILDO OLIVEIRA",
+        "premio": "Cafeteira Expresso Dolce Latte Mondial"
+    },
+    {
         "rodada": 4,
-        "nome": "AUGUSTO BARRETO",
+        "nome": "ANTONIO TAVARES",
         "premio": "Mondial Aqua Power III"
     }
 ]

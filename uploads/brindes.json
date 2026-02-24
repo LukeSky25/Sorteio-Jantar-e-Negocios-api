@@ -2,82 +2,82 @@
     {
         "id": 1,
         "nome": "Air Fryer Mondial",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 2,
         "nome": "Fone de Ouvido Aiwa",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 3,
         "nome": "Faqueiro Tramontina by Consigas",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 4,
         "nome": "Cesta com Produtos Da Terrinha",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 5,
         "nome": "Cafeteira Expresso Dolce Latte Mondial",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 6,
         "nome": "Fone de Ouvido Aiwa",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 7,
         "nome": "Faqueiro Tramontina by Consigas",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 8,
         "nome": "Cesta com Produtos Alimentícios da Solumar",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 9,
         "nome": "Liquidificador Turbo Glass Mondial",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 10,
         "nome": "Caixa de Som Aiwa",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 11,
         "nome": "Faqueiro Tramontina by Consigas",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 12,
         "nome": "Cesta com Produtos Alimentícios Da Terrinha Alimentos",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 13,
         "nome": "Mondial Aqua Power III",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 14,
         "nome": "Fone de Ouvido Aiwa",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 15,
         "nome": "Faqueiro Tramontina by Consigas",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 16,
         "nome": "Cesta com Produtos Alimentícios da Solumar",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 17,
