@@ -1,22 +1,47 @@
 [
     {
-        "rodada": 1,
+        "rodada": 5,
         "nome": "LUCAS LUCENA",
-        "premio": "Air Fryer Mondial"
+        "premio": "Voucher El Uruguayo"
     },
     {
-        "rodada": 2,
-        "nome": "ALEXANDRE CAMPOLI",
-        "premio": "Fone de Ouvido Aiwa"
+        "rodada": 5,
+        "nome": "MARLUCE SOUSA",
+        "premio": "Voucher Pizza La Ville"
     },
     {
-        "rodada": 2,
-        "nome": "AMARILDO OLIVEIRA",
-        "premio": "Cafeteira Expresso Dolce Latte Mondial"
+        "rodada": 6,
+        "nome": "MIGUEL COCUZZA",
+        "premio": "Voucher Coco Bambu"
     },
     {
-        "rodada": 4,
-        "nome": "ANTONIO TAVARES",
-        "premio": "Mondial Aqua Power III"
+        "rodada": 6,
+        "nome": "ROSI MARKUNAS",
+        "premio": "Voucher A Quinta do Marquês"
+    },
+    {
+        "rodada": 6,
+        "nome": "IDELLY CONSOLO",
+        "premio": "Voucher Maremonti"
+    },
+    {
+        "rodada": 6,
+        "nome": "CAIO PITTA",
+        "premio": "Voucher Empório Ferreira"
+    },
+    {
+        "rodada": 7,
+        "nome": "HEDINAN RIBEIRO",
+        "premio": "Voucher Pequenas Delicias"
+    },
+    {
+        "rodada": 7,
+        "nome": "ADRIANO OLIVEIRA",
+        "premio": "Voucher Dra. Andréia"
+    },
+    {
+        "rodada": 7,
+        "nome": "MAYRA OLIVEIRA",
+        "premio": "teste"
     }
 ]

@@ -105,14 +105,34 @@ app.post("/:eventId/staffs", async (req, res) => {
 app.post("/:eventId/escrever-brindes", async (req, res) => {
   try {
     const file = getFileName("brindes.json", req.params.eventId);
-    const dados = req.body;
-    const brindesFormatados = dados.map((brinde, index) => ({
-      id: index + 1,
-      nome: brinde,
-      disponivel: true,
-    }));
+    const nomesNovos = req.body; // Array de strings vindo do frontend
+
+    // 1. Lê os brindes que já existem para não perder o status 'disponivel: false'
+    let brindesAntigos = [];
+    try {
+      const conteudoAntigo = await readFile(file);
+      brindesAntigos = JSON.parse(conteudoAntigo);
+    } catch (e) {
+      brindesAntigos = [];
+    }
+
+    // 2. Monta a nova lista preservando quem já foi sorteado
+    const brindesFormatados = nomesNovos.map((nomeBrinde, index) => {
+      // Procura se esse brinde já existia ignorando letras maiúsculas/minúsculas e espaços
+      const brindeJaExistia = brindesAntigos.find(
+        (b) => b.nome.toLowerCase().trim() === nomeBrinde.toLowerCase().trim(),
+      );
+
+      return {
+        id: index + 1,
+        nome: nomeBrinde,
+        // Se já existia, mantém o status dele. Se é novo, começa como true
+        disponivel: brindeJaExistia ? brindeJaExistia.disponivel : true,
+      };
+    });
+
     await writeFiles(file, brindesFormatados);
-    res.json({ mensagem: "Lista salva" });
+    res.json({ mensagem: "Lista atualizada com sucesso" });
   } catch (error) {
     res.status(500).json({ erro: error.message });
   }
@@ -226,16 +246,13 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
 
     // 2. Verificar VENCEDORES FIXOS
     let fixosDestaRodada = [];
-    let nomesTodosFixos = []; // Array com todos os nomes fixos para não caírem no aleatório
+    let nomesTodosFixos = [];
 
     try {
       const cFixos = await readFile(fileFixos);
       const listaFixos = JSON.parse(cFixos);
 
-      // Guarda o nome de todos os fixos cadastrados (de todas as rodadas) para isolá-los
       nomesTodosFixos = listaFixos.map((f) => f.nome.toLowerCase().trim());
-
-      // Pega TODOS os fixos da rodada atual (usando filter em vez de find)
       fixosDestaRodada = listaFixos.filter(
         (f) => parseInt(f.rodada) === rodadaAtual,
       );
@@ -255,12 +272,17 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
 
     // --- PASSO A: PROCESSAR VENCEDOR(ES) FIXO(S) DA RODADA ---
     for (const fixo of fixosDestaRodada) {
-      if (sorteados.length >= quantidade) break; // Respeita a quantidade de sorteios do botão
+      if (sorteados.length >= quantidade) break;
 
       const nomeFixoFormatado = fixo.nome.toLowerCase().trim();
       const ganhadorIndex = nomes.findIndex(
         (p) => p.nome.toLowerCase().trim() === nomeFixoFormatado,
       );
+
+      // PROTEÇÃO: Se o ganhador fixo já foi sorteado antes (list === true), pula ele
+      if (ganhadorIndex !== -1 && nomes[ganhadorIndex].list === true) {
+        continue;
+      }
 
       let ganhadorObj;
       if (ganhadorIndex !== -1) {
@@ -272,7 +294,6 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
 
       let premioNome = fixo.premio;
 
-      // Busca e reserva o prêmio exato na lista de brindes
       const indexBrinde = brindes.findIndex(
         (b) =>
           b.nome.toLowerCase().trim() === premioNome.toLowerCase().trim() &&
@@ -288,7 +309,6 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
     }
 
     // --- PASSO B: COMPLETAR COM ALEATÓRIOS ---
-    // Filtra candidatos removendo quem já foi sorteado E quem for ganhador fixo (independente da rodada)
     const candidatos = nomes.filter(
       (p) =>
         p.list === false &&
@@ -297,7 +317,6 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
 
     let brindesDisponiveis = brindes.filter((b) => b.disponivel === true);
 
-    // Embaralha os candidatos restantes (Evita o problema de loop infinito do Math.random + while)
     const candidatosEmbaralhados = candidatos.sort(() => Math.random() - 0.5);
     let idxCandidato = 0;
 
@@ -309,7 +328,7 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
       idxCandidato++;
 
       let premioNome = "Sem prêmio cadastrado";
-      const premioDaVez = brindesDisponiveis.shift(); // Pega sempre o próximo brinde livre
+      const premioDaVez = brindesDisponiveis.shift();
 
       if (premioDaVez) {
         premioNome = premioDaVez.nome;
@@ -321,9 +340,15 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
       resultadoStrings.push(`${ganhador.nome} - ${premioNome}`);
     }
 
-    // Atualiza a lista geral de nomes marcando quem foi sorteado de fato
+    // --- PROTEÇÃO FINAL CONTRA NOMES REPETIDOS ---
+    // Faz a comparação blindada ignorando espaços invisíveis e letras maiúsculas/minúsculas
     nomes.forEach((pessoa) => {
-      if (sorteados.some((s) => s.nome === pessoa.nome)) pessoa.list = true;
+      const foiSorteado = sorteados.some(
+        (s) => s.nome.toLowerCase().trim() === pessoa.nome.toLowerCase().trim(),
+      );
+      if (foiSorteado) {
+        pessoa.list = true;
+      }
     });
 
     await writeFiles(fileNomes, nomes);
