@@ -609,18 +609,27 @@ app.get("/relatorio/download", async (req, res) => {
       }
     });
 
-    // --- RODAPÉ (NUMERAÇÃO DE PÁGINAS) ---
-    // AQUI ESTÁ A CORREÇÃO DA SINTAXE DO 'FOR'
+    // --- RODAPÉ (NUMERAÇÃO DE PÁGINAS CORRIGIDA) ---
     const range = doc.bufferedPageRange();
     for (let i = range.start; i < range.start + range.count; i++) {
       doc.switchToPage(i);
+
+      // SALVAÇÃO: Desliga a margem inferior para o PDFKit não criar uma nova página em branco
+      let oldBottomMargin = doc.page.margins.bottom;
+      doc.page.margins.bottom = 0;
+
       doc
         .fontSize(9)
         .fillColor("#aaaaaa")
-        .text(`Página ${i + 1} de ${range.count}`, 50, doc.page.height - 40, {
-          align: "center",
-          width: 495,
-        });
+        .text(
+          `Página ${i + 1} de ${range.count}`,
+          50,
+          doc.page.height - 30, // Posição exata do rodapé
+          { align: "center", width: 495, lineBreak: false },
+        );
+
+      // Devolve a margem ao normal
+      doc.page.margins.bottom = oldBottomMargin;
     }
 
     doc.end();
