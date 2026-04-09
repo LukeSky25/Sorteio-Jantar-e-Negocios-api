@@ -1,152 +1,227 @@
 [
     {
         "id": 1,
+        "nome": "--- RODADA 1 ---",
+        "disponivel": true
+    },
+    {
+        "id": 2,
         "nome": "Air Fryer Mondial",
         "disponivel": false
     },
     {
-        "id": 2,
-        "nome": "Fone de Ouvido Aiwa",
-        "disponivel": false
-    },
-    {
         "id": 3,
-        "nome": "Faqueiro Tramontina by Consigas",
+        "nome": "Fone de Ouvido Aiwa",
         "disponivel": false
     },
     {
         "id": 4,
-        "nome": "Cesta com Produtos Da Terrinha",
+        "nome": "Faqueiro Tramontina by Consigas",
         "disponivel": false
     },
     {
         "id": 5,
-        "nome": "Cafeteira Expresso Dolce Latte Mondial",
+        "nome": "Cesta com Produtos Da Terrinha",
         "disponivel": false
     },
     {
         "id": 6,
-        "nome": "Fone de Ouvido Aiwa",
-        "disponivel": false
+        "nome": "--- RODADA 2 ---",
+        "disponivel": true
     },
     {
         "id": 7,
-        "nome": "Faqueiro Tramontina by Consigas",
+        "nome": "Cafeteira Expresso Dolce Latte Mondial",
         "disponivel": false
     },
     {
         "id": 8,
-        "nome": "Cesta com Produtos Alimentícios da Solumar",
-        "disponivel": false
-    },
-    {
-        "id": 9,
-        "nome": "Liquidificador Turbo Glass Mondial",
-        "disponivel": false
-    },
-    {
-        "id": 10,
-        "nome": "Caixa de Som Aiwa",
-        "disponivel": false
-    },
-    {
-        "id": 11,
-        "nome": "Faqueiro Tramontina by Consigas",
-        "disponivel": false
-    },
-    {
-        "id": 12,
-        "nome": "Cesta com Produtos Alimentícios Da Terrinha Alimentos",
-        "disponivel": false
-    },
-    {
-        "id": 13,
-        "nome": "Mondial Aqua Power III",
-        "disponivel": false
-    },
-    {
-        "id": 14,
         "nome": "Fone de Ouvido Aiwa",
         "disponivel": false
     },
     {
-        "id": 15,
+        "id": 9,
         "nome": "Faqueiro Tramontina by Consigas",
         "disponivel": false
     },
     {
-        "id": 16,
-        "nome": "Cesta com Produtos Alimentícios da Solumar",
+        "id": 10,
+        "nome": "Cesta com Produtos da Solumar",
         "disponivel": false
     },
     {
+        "id": 11,
+        "nome": "--- RODADA 4 ---",
+        "disponivel": true
+    },
+    {
+        "id": 12,
+        "nome": "Liquidificador Turbo Glass Mondial",
+        "disponivel": false
+    },
+    {
+        "id": 13,
+        "nome": "Caixa de Som Aiwa",
+        "disponivel": false
+    },
+    {
+        "id": 14,
+        "nome": "Faqueiro Tramontina by Consigas",
+        "disponivel": false
+    },
+    {
+        "id": 15,
+        "nome": "Cesta com Produtos Da Terrinha",
+        "disponivel": false
+    },
+    {
+        "id": 16,
+        "nome": "--- RODADA 5 ---",
+        "disponivel": true
+    },
+    {
         "id": 17,
-        "nome": "Voucher El Uruguayo",
+        "nome": "Mondial Aqua Power III",
         "disponivel": false
     },
     {
         "id": 18,
-        "nome": "Cesta com Produtos Alimentícios Da Terrinha Alimentos",
+        "nome": "Fone de Ouvido Aiwa",
         "disponivel": false
     },
     {
         "id": 19,
-        "nome": "Cesta com Produtos Alimentícios Da Terrinha Alimentos",
+        "nome": "Faqueiro Tramontina by Consigas",
         "disponivel": false
     },
     {
         "id": 20,
-        "nome": "Voucher Pizza La Ville",
+        "nome": "Cesta com Produtos da Solumar",
         "disponivel": false
     },
     {
         "id": 21,
-        "nome": "Voucher Coco Bambu",
-        "disponivel": false
+        "nome": "--- RODADA 6 ---",
+        "disponivel": true
     },
     {
         "id": 22,
-        "nome": "Voucher A Quinta do Marquês",
+        "nome": "Voucher El Uruguayo",
         "disponivel": false
     },
     {
         "id": 23,
-        "nome": "Voucher Maremonti",
+        "nome": "Cesta com Produtos Da Terrinha ",
         "disponivel": false
     },
     {
         "id": 24,
-        "nome": "Voucher Empório Ferreira",
+        "nome": "Cesta com Produtos Da Terrinha",
         "disponivel": false
     },
     {
         "id": 25,
-        "nome": "Cesta com Produtos Alimentícios da Solumar",
+        "nome": "Voucher Pizza La Ville",
         "disponivel": false
     },
     {
         "id": 26,
-        "nome": "Cesta com Produtos Alimentícios da Solumar",
-        "disponivel": false
+        "nome": "--- RODADA 5 ---",
+        "disponivel": true
     },
     {
         "id": 27,
-        "nome": "Voucher Pequenas Delicias",
+        "nome": "Voucher Coco Bambu",
         "disponivel": false
     },
     {
         "id": 28,
-        "nome": "Voucher Dra. Andréia",
+        "nome": "Voucher A Quinta do Marquês",
         "disponivel": false
     },
     {
         "id": 29,
-        "nome": "teste",
+        "nome": "Voucher Maremonti",
         "disponivel": false
     },
     {
         "id": 30,
-        "nome": "teste",
+        "nome": "Voucher Empório Ferreira",
+        "disponivel": false
+    },
+    {
+        "id": 31,
+        "nome": "--- RODADA 6 ---",
+        "disponivel": true
+    },
+    {
+        "id": 32,
+        "nome": "Cesta com Produtos da Solumar",
+        "disponivel": false
+    },
+    {
+        "id": 33,
+        "nome": "Cesta com Produtos da Solumar",
+        "disponivel": false
+    },
+    {
+        "id": 34,
+        "nome": "Voucher Pequenas Delicias",
+        "disponivel": false
+    },
+    {
+        "id": 35,
+        "nome": "Voucher Dra. Andréia",
+        "disponivel": false
+    },
+    {
+        "id": 36,
+        "nome": "--- RODADA 7 ---",
+        "disponivel": true
+    },
+    {
+        "id": 37,
+        "nome": "teste1",
+        "disponivel": false
+    },
+    {
+        "id": 38,
+        "nome": "teste2",
+        "disponivel": false
+    },
+    {
+        "id": 39,
+        "nome": "teste3",
+        "disponivel": false
+    },
+    {
+        "id": 40,
+        "nome": "teste4",
+        "disponivel": false
+    },
+    {
+        "id": 41,
+        "nome": "-- RODADA 8 --",
+        "disponivel": true
+    },
+    {
+        "id": 42,
+        "nome": "teste5",
+        "disponivel": false
+    },
+    {
+        "id": 43,
+        "nome": "teste6",
+        "disponivel": false
+    },
+    {
+        "id": 44,
+        "nome": "teste7",
+        "disponivel": false
+    },
+    {
+        "id": 45,
+        "nome": "teste8",
         "disponivel": false
     }
 ]

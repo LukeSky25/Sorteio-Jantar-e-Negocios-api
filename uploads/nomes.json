@@ -1,7 +1,7 @@
 [
     {
         "nome": "ALEXANDRE CAMPOLI",
-        "list": true
+        "list": false
     },
     {
         "nome": "ALEXANDRE TADEU ZANAROTO",
@@ -33,7 +33,7 @@
     },
     {
         "nome": "ANTONIO TAVARES",
-        "list": false
+        "list": true
     },
     {
         "nome": "AUGUSTO BARRETO",
@@ -49,15 +49,15 @@
     },
     {
         "nome": "CAMILA FERRI",
-        "list": true
-    },
-    {
-        "nome": "CARLOS PAES",
         "list": false
     },
     {
-        "nome": "CARLOS PICOS",
+        "nome": "CARLOS PAES",
         "list": true
+    },
+    {
+        "nome": "CARLOS PICOS",
+        "list": false
     },
     {
         "nome": "CAROLINE KHERLAKIAN",
@@ -69,11 +69,11 @@
     },
     {
         "nome": "CÉSAR VIANA",
-        "list": true
+        "list": false
     },
     {
         "nome": "CYBELE IMAMURA",
-        "list": true
+        "list": false
     },
     {
         "nome": "CLADIA NEVONI",
@@ -97,7 +97,7 @@
     },
     {
         "nome": "CRISTINA SULSBACHER",
-        "list": false
+        "list": true
     },
     {
         "nome": "DANIELLE RIBEIRO",
@@ -105,11 +105,11 @@
     },
     {
         "nome": "DENISE SALES",
-        "list": false
+        "list": true
     },
     {
         "nome": "EDILSON CARVALHO",
-        "list": false
+        "list": true
     },
     {
         "nome": "EDIMARCIO PEREIRA DOS SANTOS",
@@ -125,7 +125,7 @@
     },
     {
         "nome": "EVERTON LÚCIO",
-        "list": true
+        "list": false
     },
     {
         "nome": "FABIO CATELAN",
@@ -161,11 +161,11 @@
     },
     {
         "nome": "GISLAINE BRAÇAL",
-        "list": false
+        "list": true
     },
     {
         "nome": "GRACIANE ARAÚJO",
-        "list": false
+        "list": true
     },
     {
         "nome": "GUILHERME BRAGA",
@@ -173,15 +173,15 @@
     },
     {
         "nome": "HENRIQUE NUNES",
-        "list": true
-    },
-    {
-        "nome": "HENRY SHIMADA",
         "list": false
     },
     {
-        "nome": "IGOR YAKOVENKO",
+        "nome": "HENRY SHIMADA",
         "list": true
+    },
+    {
+        "nome": "IGOR YAKOVENKO",
+        "list": false
     },
     {
         "nome": "ISSAO IMAMURA",
@@ -209,11 +209,11 @@
     },
     {
         "nome": "JOSÉ ROBERTO TORRANO JÚNIOR",
-        "list": true
+        "list": false
     },
     {
         "nome": "JOSÉ ROBERTO SILVA",
-        "list": false
+        "list": true
     },
     {
         "nome": "JOSÉ RODRIGO",
@@ -221,19 +221,19 @@
     },
     {
         "nome": "JULIANA ARAUJO",
-        "list": true
+        "list": false
     },
     {
         "nome": "JULIO AIDAR",
-        "list": false
+        "list": true
     },
     {
         "nome": "KO CHIA LIN",
-        "list": false
+        "list": true
     },
     {
         "nome": "KRISTIELLE OLIVEIRA FONSECA",
-        "list": true
+        "list": false
     },
     {
         "nome": "LAÉRCIO J NICOLAU",
@@ -241,11 +241,11 @@
     },
     {
         "nome": "ROBERTA CRUZ",
-        "list": false
+        "list": true
     },
     {
         "nome": "LEONARDO TAVARES",
-        "list": true
+        "list": false
     },
     {
         "nome": "LETÍCIA CAMPOS",
@@ -257,7 +257,7 @@
     },
     {
         "nome": "LUCI DAMIAN",
-        "list": false
+        "list": true
     },
     {
         "nome": "LUIS PROCÓPIO",
@@ -281,11 +281,11 @@
     },
     {
         "nome": "MARCOS BETONI",
-        "list": true
+        "list": false
     },
     {
         "nome": "MARIA IZILDA",
-        "list": false
+        "list": true
     },
     {
         "nome": "MARINA HELENA CAMPOS",
@@ -297,7 +297,7 @@
     },
     {
         "nome": "MARLI GALDIANO",
-        "list": false
+        "list": true
     },
     {
         "nome": "MAURO DOTTORI",
@@ -313,11 +313,11 @@
     },
     {
         "nome": "NASCIR SALES",
-        "list": false
+        "list": true
     },
     {
         "nome": "NATÁLIA PACHIONI LÚCIO",
-        "list": false
+        "list": true
     },
     {
         "nome": "NÉLIA ZANFOLIM",
@@ -329,11 +329,11 @@
     },
     {
         "nome": "PATRICIA AP SILVEIRA RAMOS",
-        "list": false
+        "list": true
     },
     {
         "nome": "PATRICIA VIANNA",
-        "list": false
+        "list": true
     },
     {
         "nome": "PAULA KRAUTZ BRAGA",
@@ -349,7 +349,7 @@
     },
     {
         "nome": "PAULO SILVA",
-        "list": true
+        "list": false
     },
     {
         "nome": "RAMOS",
@@ -361,11 +361,11 @@
     },
     {
         "nome": "RICARDO REIS",
-        "list": false
+        "list": true
     },
     {
         "nome": "ROSALIA DANTAS",
-        "list": false
+        "list": true
     },
     {
         "nome": "SANDRA PRATO",
@@ -381,7 +381,7 @@
     },
     {
         "nome": "SUELI CAMPOLI",
-        "list": false
+        "list": true
     },
     {
         "nome": "THYAGO ABRAÃO",
@@ -389,7 +389,7 @@
     },
     {
         "nome": "VALDEMY ALVES MACEDO",
-        "list": true
+        "list": false
     },
     {
         "nome": "VALÉRIA CASALE",
@@ -397,7 +397,7 @@
     },
     {
         "nome": "VÂNIA MENEZES",
-        "list": true
+        "list": false
     },
     {
         "nome": "VINICIUS AIELLO",
@@ -405,15 +405,15 @@
     },
     {
         "nome": "WAGNER MARTINS",
-        "list": true
+        "list": false
     },
     {
         "nome": "WAGNER TRAFANNI",
-        "list": false
+        "list": true
     },
     {
         "nome": "WALTER ONOFRE",
-        "list": false
+        "list": true
     },
     {
         "nome": "YEH LUN CHUN",
@@ -429,7 +429,7 @@
     },
     {
         "nome": "ANTONIO GARUTI",
-        "list": true
+        "list": false
     },
     {
         "nome": "RAFAELA COELHO",
@@ -445,7 +445,7 @@
     },
     {
         "nome": "CAIO GOMES",
-        "list": true
+        "list": false
     },
     {
         "nome": "ROBERTO OLIVEIRA",
@@ -457,7 +457,7 @@
     },
     {
         "nome": "MARCIO FERREIRA SANTOS",
-        "list": false
+        "list": true
     },
     {
         "nome": "ROSI MARKUNAS",
@@ -469,11 +469,11 @@
     },
     {
         "nome": "MARLUCE SOUSA",
-        "list": true
+        "list": false
     },
     {
         "nome": "MAYRA OLIVEIRA",
-        "list": true
+        "list": false
     },
     {
         "nome": "THIAGO HENRIQUE SILVA",
@@ -481,7 +481,7 @@
     },
     {
         "nome": "THOMAS GARIGLIA",
-        "list": true
+        "list": false
     },
     {
         "nome": "ADRIANO OLIVEIRA",
@@ -505,6 +505,6 @@
     },
     {
         "nome": "CLAUDIO LUIS SILVA",
-        "list": false
+        "list": true
     }
 ]

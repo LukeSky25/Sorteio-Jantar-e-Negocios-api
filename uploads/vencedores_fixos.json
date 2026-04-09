@@ -1,47 +1,37 @@
 [
     {
-        "rodada": 5,
+        "rodada": 1,
         "nome": "LUCAS LUCENA",
-        "premio": "Voucher El Uruguayo"
+        "premio": "Air Fryer Mondial"
+    },
+    {
+        "rodada": 2,
+        "nome": "MIGUEL COCUZZA",
+        "premio": "Fone de Ouvido Aiwa"
+    },
+    {
+        "rodada": 3,
+        "nome": "ROSI MARKUNAS",
+        "premio": "Faqueiro Tramontina by Consigas"
+    },
+    {
+        "rodada": 4,
+        "nome": "CAIO PITTA",
+        "premio": "Faqueiro Tramontina by Consigas"
     },
     {
         "rodada": 5,
-        "nome": "MARLUCE SOUSA",
+        "nome": "IDELLY CONSOLO",
         "premio": "Voucher Pizza La Ville"
     },
     {
         "rodada": 6,
-        "nome": "MIGUEL COCUZZA",
+        "nome": "HEDINAN RIBEIRO",
         "premio": "Voucher Coco Bambu"
     },
     {
         "rodada": 6,
-        "nome": "ROSI MARKUNAS",
-        "premio": "Voucher A Quinta do Marquês"
-    },
-    {
-        "rodada": 6,
-        "nome": "IDELLY CONSOLO",
-        "premio": "Voucher Maremonti"
-    },
-    {
-        "rodada": 6,
-        "nome": "CAIO PITTA",
-        "premio": "Voucher Empório Ferreira"
-    },
-    {
-        "rodada": 7,
-        "nome": "HEDINAN RIBEIRO",
-        "premio": "Voucher Pequenas Delicias"
-    },
-    {
-        "rodada": 7,
         "nome": "ADRIANO OLIVEIRA",
-        "premio": "Voucher Dra. Andréia"
-    },
-    {
-        "rodada": 7,
-        "nome": "MAYRA OLIVEIRA",
-        "premio": "teste"
+        "premio": "Voucher Empório Ferreira"
     }
 ]

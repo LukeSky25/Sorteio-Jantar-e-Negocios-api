@@ -5,7 +5,6 @@ const PDFDocument = require("pdfkit");
 const cors = require("cors");
 const multer = require("multer");
 
-// Seus módulos locais
 const findFiles = require("./modules/find");
 const readFile = require("./modules/read");
 const writeFiles = require("./modules/write");
@@ -16,52 +15,43 @@ app.use(cors());
 app.use(express.json({ limit: "20mb" }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// --- HELPER ---
-const getFileName = (baseName, eventId) => {
-  const id = eventId || "default";
-  if (id === "default") return baseName;
-  const partes = baseName.split(".");
-  const ext = partes.pop();
-  const nome = partes.join(".");
-  return `${nome}_${id}.${ext}`;
-};
-
 // --- ESTILO ---
-const getStylePath = (eventId) =>
-  path.join(__dirname, "uploads", getFileName("styleConfig.json", eventId));
+const getStylePath = () => path.join(__dirname, "uploads", "styleConfig.json");
 
-const loadStyleConfig = (eventId) => {
+const loadStyleConfig = () => {
+  const fallbackStyle = {
+    title: "Evento",
+    color: "#000000",
+    logo: "",
+    backgroundType: "color",
+    backgroundValue: "#40e0d0",
+  };
+
   try {
-    const p = getStylePath(eventId);
+    const p = getStylePath();
     if (fs.existsSync(p)) {
       const data = fs.readFileSync(p, "utf8");
-      return JSON.parse(data);
+      const parsedData = JSON.parse(data);
+      return { ...fallbackStyle, ...parsedData };
     }
-    return {
-      title: "Evento",
-      color: "#000000",
-      logo: "",
-      backgroundType: "color",
-      backgroundValue: "#40e0d0",
-    };
+    return fallbackStyle;
   } catch (err) {
-    return { title: "Evento", color: "#000000" };
+    console.error("Erro ao ler o styleConfig.json:", err);
+    return fallbackStyle;
   }
 };
 
-app.get("/:eventId/style", (req, res) =>
-  res.json(loadStyleConfig(req.params.eventId)),
-);
+app.get("/style", (req, res) => res.json(loadStyleConfig()));
 
-app.post("/:eventId/style", (req, res) => {
-  const p = getStylePath(req.params.eventId);
+app.post("/style", (req, res) => {
+  const p = getStylePath();
   fs.writeFileSync(p, JSON.stringify(req.body, null, 2), "utf8");
   res.json({ message: "Salvo" });
 });
 
-// --- VENCEDORES FIXOS (CONFIGURAÇÃO) ---
-app.post("/:eventId/vencedores-fixos", async (req, res) => {
-  const file = getFileName("vencedores_fixos.json", req.params.eventId);
+// --- VENCEDORES FIXOS ---
+app.post("/vencedores-fixos", async (req, res) => {
+  const file = "vencedores_fixos.json";
   try {
     await writeFiles(file, req.body);
     res.json({ message: "Configuração salva!" });
@@ -70,8 +60,8 @@ app.post("/:eventId/vencedores-fixos", async (req, res) => {
   }
 });
 
-app.get("/:eventId/vencedores-fixos", async (req, res) => {
-  const file = getFileName("vencedores_fixos.json", req.params.eventId);
+app.get("/vencedores-fixos", async (req, res) => {
+  const file = "vencedores_fixos.json";
   try {
     const conteudo = await readFile(file);
     res.json(JSON.parse(conteudo));
@@ -81,9 +71,9 @@ app.get("/:eventId/vencedores-fixos", async (req, res) => {
 });
 
 // --- STAFFS ---
-app.get("/:eventId/staffs", async (req, res) => {
+app.get("/staffs", async (req, res) => {
   try {
-    const file = getFileName("staffs.txt", req.params.eventId);
+    const file = "staffs.txt";
     const conteudo = await readFile(file);
     res.json({ quantidade: conteudo.trim() || "0" });
   } catch (error) {
@@ -91,9 +81,9 @@ app.get("/:eventId/staffs", async (req, res) => {
   }
 });
 
-app.post("/:eventId/staffs", async (req, res) => {
+app.post("/staffs", async (req, res) => {
   try {
-    const file = getFileName("staffs.txt", req.params.eventId);
+    const file = "staffs.txt";
     await writeFiles(file, String(req.body.quantidade));
     res.json({ message: "Staffs atualizados" });
   } catch (error) {
@@ -101,13 +91,12 @@ app.post("/:eventId/staffs", async (req, res) => {
   }
 });
 
-// --- BRINDES ---
-app.post("/:eventId/escrever-brindes", async (req, res) => {
+// --- BRINDES (CORRIGIDO DUPLICADOS) ---
+app.post("/escrever-brindes", async (req, res) => {
   try {
-    const file = getFileName("brindes.json", req.params.eventId);
-    const nomesNovos = req.body; // Array de strings vindo do frontend
+    const file = "brindes.json";
+    const nomesNovos = req.body;
 
-    // 1. Lê os brindes que já existem para não perder o status 'disponivel: false'
     let brindesAntigos = [];
     try {
       const conteudoAntigo = await readFile(file);
@@ -116,18 +105,24 @@ app.post("/:eventId/escrever-brindes", async (req, res) => {
       brindesAntigos = [];
     }
 
-    // 2. Monta a nova lista preservando quem já foi sorteado
+    let antigosDisponiveis = [...brindesAntigos];
+
     const brindesFormatados = nomesNovos.map((nomeBrinde, index) => {
-      // Procura se esse brinde já existia ignorando letras maiúsculas/minúsculas e espaços
-      const brindeJaExistia = brindesAntigos.find(
+      const indexAntigo = antigosDisponiveis.findIndex(
         (b) => b.nome.toLowerCase().trim() === nomeBrinde.toLowerCase().trim(),
       );
+
+      let statusDisponivel = true;
+
+      if (indexAntigo !== -1) {
+        statusDisponivel = antigosDisponiveis[indexAntigo].disponivel;
+        antigosDisponiveis.splice(indexAntigo, 1);
+      }
 
       return {
         id: index + 1,
         nome: nomeBrinde,
-        // Se já existia, mantém o status dele. Se é novo, começa como true
-        disponivel: brindeJaExistia ? brindeJaExistia.disponivel : true,
+        disponivel: statusDisponivel,
       };
     });
 
@@ -138,9 +133,9 @@ app.post("/:eventId/escrever-brindes", async (req, res) => {
   }
 });
 
-app.get("/:eventId/lista-brindes", async (req, res) => {
+app.get("/lista-brindes", async (req, res) => {
   try {
-    const file = getFileName("brindes.json", req.params.eventId);
+    const file = "brindes.json";
     const conteudo = await readFile(file);
     const brindes = JSON.parse(conteudo);
     const nomes = brindes.map((b) => b.nome);
@@ -151,9 +146,9 @@ app.get("/:eventId/lista-brindes", async (req, res) => {
 });
 
 // --- ARQUIVOS E LISTAS ---
-app.get("/:eventId/arquivo/:nome", async (req, res) => {
+app.get("/arquivo/:nome", async (req, res) => {
   try {
-    const file = getFileName(req.params.nome, req.params.eventId);
+    const file = req.params.nome;
     const conteudo = await readFile(file);
     res.json(JSON.parse(conteudo));
   } catch (error) {
@@ -161,9 +156,9 @@ app.get("/:eventId/arquivo/:nome", async (req, res) => {
   }
 });
 
-app.get("/:eventId/lista", async (req, res) => {
+app.get("/lista", async (req, res) => {
   try {
-    const file = getFileName("lista.txt", req.params.eventId);
+    const file = "lista.txt";
     const conteudo = await readFile(file);
     const linhas = conteudo.split("\n").filter(Boolean);
     res.json(linhas);
@@ -172,9 +167,9 @@ app.get("/:eventId/lista", async (req, res) => {
   }
 });
 
-app.post("/:eventId/escrever/lista.txt", async (req, res) => {
+app.post("/escrever/lista.txt", async (req, res) => {
   try {
-    const file = getFileName("lista.txt", req.params.eventId);
+    const file = "lista.txt";
     const dados = req.body;
     const textoOriginal = dados.join("\n");
     await writeFiles(file, textoOriginal);
@@ -185,12 +180,10 @@ app.post("/:eventId/escrever/lista.txt", async (req, res) => {
 });
 
 // --- RESET ---
-app.get("/:eventId/reset", async (req, res) => {
-  const eventId = req.params.eventId;
+app.get("/reset", async (req, res) => {
   try {
-    const fileLista = getFileName("lista.txt", eventId);
-    const fileNomes = getFileName("nomes.json", eventId);
-    const fileFixos = getFileName("vencedores_fixos.json", eventId);
+    const fileLista = "lista.txt";
+    const fileNomes = "nomes.json";
 
     const conteudo = await readFile(fileLista);
     const linhas = conteudo.split("\n").filter(Boolean);
@@ -201,18 +194,15 @@ app.get("/:eventId/reset", async (req, res) => {
     await writeFiles(fileNomes, nomesFormatados);
 
     try {
-      const fileBrindes = getFileName("brindes.json", eventId);
+      const fileBrindes = "brindes.json";
       const conteudoBrindes = await readFile(fileBrindes);
       const brindes = JSON.parse(conteudoBrindes);
       const brindesResetados = brindes.map((b) => ({ ...b, disponivel: true }));
       await writeFiles(fileBrindes, brindesResetados);
     } catch (e) {}
 
-    const fileRelatorio = getFileName("nomes-sorteados.txt", eventId);
+    const fileRelatorio = "nomes-sorteados.txt";
     await writeFiles(fileRelatorio, "");
-
-    // Opcional: Limpar lista de vencedores fixos ao resetar
-    // await writeFiles(fileFixos, []);
 
     res.json("Reset completo");
   } catch (error) {
@@ -220,21 +210,19 @@ app.get("/:eventId/reset", async (req, res) => {
   }
 });
 
-// --- SORTEIO (LÓGICA HÍBRIDA CORRIGIDA) ---
-app.get("/:eventId/sortear/:quantidade", async (req, res) => {
-  const eventId = req.params.eventId;
+// --- SORTEIO PRINCIPAL (FISHER-YATES + ORDEM DOS PRÊMIOS MANTIDA) ---
+app.get("/sortear/:quantidade", async (req, res) => {
   const quantidade = parseInt(req.params.quantidade, 10);
 
-  const fileNomes = getFileName("nomes.json", eventId);
-  const fileBrindes = getFileName("brindes.json", eventId);
-  const fileFixos = getFileName("vencedores_fixos.json", eventId);
-  const fileRelatorio = getFileName("nomes-sorteados.txt", eventId);
+  const fileNomes = "nomes.json";
+  const fileBrindes = "brindes.json";
+  const fileFixos = "vencedores_fixos.json";
+  const fileRelatorio = "nomes-sorteados.txt";
 
   try {
     const conteudoNomes = await readFile(fileNomes);
     const nomes = JSON.parse(conteudoNomes);
 
-    // 1. Descobrir RODADA ATUAL
     let rodadaAtual = 1;
     try {
       const conteudoRelatorio = await readFile(fileRelatorio);
@@ -244,24 +232,17 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
       rodadaAtual = 1;
     }
 
-    // 2. Verificar VENCEDORES FIXOS
     let fixosDestaRodada = [];
     let nomesTodosFixos = [];
-
     try {
       const cFixos = await readFile(fileFixos);
       const listaFixos = JSON.parse(cFixos);
-
       nomesTodosFixos = listaFixos.map((f) => f.nome.toLowerCase().trim());
       fixosDestaRodada = listaFixos.filter(
         (f) => parseInt(f.rodada) === rodadaAtual,
       );
     } catch (e) {}
 
-    const resultadoStrings = [];
-    const sorteados = [];
-
-    // Carrega brindes
     let brindes = [];
     try {
       const conteudoBrindes = await readFile(fileBrindes);
@@ -270,78 +251,91 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
       brindes = [];
     }
 
-    // --- PASSO A: PROCESSAR VENCEDOR(ES) FIXO(S) DA RODADA ---
-    for (const fixo of fixosDestaRodada) {
-      if (sorteados.length >= quantidade) break;
+    let brindesDisponiveis = brindes.filter((b) => b.disponivel === true);
 
-      const nomeFixoFormatado = fixo.nome.toLowerCase().trim();
-      const ganhadorIndex = nomes.findIndex(
-        (p) => p.nome.toLowerCase().trim() === nomeFixoFormatado,
-      );
+    let premiosDestaRodada = [];
+    let countPremios = 0;
 
-      // PROTEÇÃO: Se o ganhador fixo já foi sorteado antes (list === true), pula ele
-      if (ganhadorIndex !== -1 && nomes[ganhadorIndex].list === true) {
-        continue;
+    for (let i = 0; i < brindesDisponiveis.length; i++) {
+      if (countPremios >= quantidade) break;
+      const b = brindesDisponiveis[i];
+      if (!b.nome.startsWith("-") && !b.nome.startsWith("=")) {
+        premiosDestaRodada.push(b);
+        countPremios++;
       }
-
-      let ganhadorObj;
-      if (ganhadorIndex !== -1) {
-        ganhadorObj = nomes[ganhadorIndex];
-        nomes[ganhadorIndex].list = true;
-      } else {
-        ganhadorObj = { nome: fixo.nome, list: true };
-      }
-
-      let premioNome = fixo.premio;
-
-      const indexBrinde = brindes.findIndex(
-        (b) =>
-          b.nome.toLowerCase().trim() === premioNome.toLowerCase().trim() &&
-          b.disponivel,
-      );
-
-      if (indexBrinde !== -1) {
-        brindes[indexBrinde].disponivel = false;
-      }
-
-      sorteados.push(ganhadorObj);
-      resultadoStrings.push(`${ganhadorObj.nome} - ${premioNome}`);
     }
 
-    // --- PASSO B: COMPLETAR COM ALEATÓRIOS ---
+    while (premiosDestaRodada.length < quantidade) {
+      premiosDestaRodada.push({
+        id: null,
+        nome: "Sem prêmio cadastrado",
+        disponivel: true,
+      });
+    }
+
     const candidatos = nomes.filter(
       (p) =>
         p.list === false &&
         !nomesTodosFixos.includes(p.nome.toLowerCase().trim()),
     );
 
-    let brindesDisponiveis = brindes.filter((b) => b.disponivel === true);
+    const candidatosEmbaralhados = [...candidatos];
+    for (let i = candidatosEmbaralhados.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [candidatosEmbaralhados[i], candidatosEmbaralhados[j]] = [
+        candidatosEmbaralhados[j],
+        candidatosEmbaralhados[i],
+      ];
+    }
 
-    const candidatosEmbaralhados = candidatos.sort(() => Math.random() - 0.5);
+    const resultadoStrings = [];
+    const sorteados = [];
     let idxCandidato = 0;
 
-    while (
-      sorteados.length < quantidade &&
-      idxCandidato < candidatosEmbaralhados.length
-    ) {
-      const ganhador = candidatosEmbaralhados[idxCandidato];
-      idxCandidato++;
+    for (let i = 0; i < quantidade; i++) {
+      const premioAtual = premiosDestaRodada[i];
 
-      let premioNome = "Sem prêmio cadastrado";
-      const premioDaVez = brindesDisponiveis.shift();
+      const fixoIndex = fixosDestaRodada.findIndex(
+        (f) =>
+          f.premio.toLowerCase().trim() ===
+          premioAtual.nome.toLowerCase().trim(),
+      );
 
-      if (premioDaVez) {
-        premioNome = premioDaVez.nome;
-        const indexOriginal = brindes.findIndex((b) => b.id === premioDaVez.id);
+      let ganhadorObj;
+
+      if (fixoIndex !== -1) {
+        const fixoParaEstePremio = fixosDestaRodada[fixoIndex];
+        fixosDestaRodada.splice(fixoIndex, 1);
+
+        const nomeFixoFormatado = fixoParaEstePremio.nome.toLowerCase().trim();
+        const ganhadorIndex = nomes.findIndex(
+          (p) => p.nome.toLowerCase().trim() === nomeFixoFormatado,
+        );
+
+        if (ganhadorIndex !== -1) {
+          ganhadorObj = nomes[ganhadorIndex];
+          nomes[ganhadorIndex].list = true;
+        } else {
+          ganhadorObj = { nome: fixoParaEstePremio.nome, list: true };
+        }
+      } else {
+        if (idxCandidato < candidatosEmbaralhados.length) {
+          ganhadorObj = candidatosEmbaralhados[idxCandidato];
+          idxCandidato++;
+        } else {
+          ganhadorObj = { nome: "Faltam convidados", list: true };
+        }
+      }
+
+      if (premioAtual.id !== null) {
+        const indexOriginal = brindes.findIndex((b) => b.id === premioAtual.id);
         if (indexOriginal !== -1) brindes[indexOriginal].disponivel = false;
       }
 
-      sorteados.push(ganhador);
-      resultadoStrings.push(`${ganhador.nome} - ${premioNome}`);
+      sorteados.push(ganhadorObj);
+      resultadoStrings.push(`${ganhadorObj.nome} - ${premioAtual.nome}`);
     }
 
-    // --- PROTEÇÃO FINAL CONTRA NOMES REPETIDOS ---
-    // Faz a comparação blindada ignorando espaços invisíveis e letras maiúsculas/minúsculas
     nomes.forEach((pessoa) => {
       const foiSorteado = sorteados.some(
         (s) => s.nome.toLowerCase().trim() === pessoa.nome.toLowerCase().trim(),
@@ -360,9 +354,70 @@ app.get("/:eventId/sortear/:quantidade", async (req, res) => {
   }
 });
 
+// --- RESSORTEAR UMA PESSOA AUSENTE ---
+app.post("/ressortear", async (req, res) => {
+  const { textoAntigo } = req.body;
+  const partes = textoAntigo.split(" - ");
+  const nomeAntigo = partes[0].trim();
+  const premio = partes[1] ? partes[1].trim() : "Sem prêmio";
+
+  const fileNomes = "nomes.json";
+  const fileRelatorio = "nomes-sorteados.txt";
+
+  try {
+    const conteudoNomes = await readFile(fileNomes);
+    const nomes = JSON.parse(conteudoNomes);
+
+    const indexAntigo = nomes.findIndex(
+      (n) => n.nome.toLowerCase().trim() === nomeAntigo.toLowerCase(),
+    );
+    if (indexAntigo !== -1) nomes[indexAntigo].list = false;
+
+    const fileFixos = "vencedores_fixos.json";
+    let nomesTodosFixos = [];
+    try {
+      const cFixos = await readFile(fileFixos);
+      nomesTodosFixos = JSON.parse(cFixos).map((f) =>
+        f.nome.toLowerCase().trim(),
+      );
+    } catch (e) {}
+
+    const candidatos = nomes.filter(
+      (p) =>
+        p.list === false &&
+        !nomesTodosFixos.includes(p.nome.toLowerCase().trim()),
+    );
+
+    if (candidatos.length === 0) {
+      return res
+        .status(400)
+        .json({ mensagem: "Não há mais pessoas na lista para ressortear!" });
+    }
+
+    const novoGanhador =
+      candidatos[Math.floor(Math.random() * candidatos.length)];
+    const indexNovo = nomes.findIndex((n) => n.nome === novoGanhador.nome);
+    nomes[indexNovo].list = true;
+
+    const novoTexto = `${novoGanhador.nome} - ${premio}`;
+
+    await writeFiles(fileNomes, nomes);
+
+    try {
+      let relatorio = await readFile(fileRelatorio);
+      relatorio = relatorio.replace(textoAntigo, novoTexto);
+      await writeFiles(fileRelatorio, relatorio);
+    } catch (e) {}
+
+    res.json({ novoTexto });
+  } catch (error) {
+    res.status(500).json({ erro: error.message });
+  }
+});
+
 // --- RELATÓRIO E LEITURA ---
-app.post("/:eventId/relatorio/escrever", async (req, res) => {
-  const file = getFileName("nomes-sorteados.txt", req.params.eventId);
+app.post("/relatorio/escrever", async (req, res) => {
+  const file = "nomes-sorteados.txt";
   try {
     const { nomes, rodada } = req.body;
     let texto = `\n--- RODADA ${rodada} ---\n` + nomes.join("\n") + "\n";
@@ -377,8 +432,8 @@ app.post("/:eventId/relatorio/escrever", async (req, res) => {
   }
 });
 
-app.get("/:eventId/relatorio", async (req, res) => {
-  const file = getFileName("nomes-sorteados.txt", req.params.eventId);
+app.get("/relatorio", async (req, res) => {
+  const file = "nomes-sorteados.txt";
   try {
     const conteudo = await readFile(file);
     const linhas = conteudo.split("\n").filter(Boolean);
@@ -388,12 +443,11 @@ app.get("/:eventId/relatorio", async (req, res) => {
   }
 });
 
-// --- PDF DOWNLOAD ---
-app.get("/:eventId/relatorio/download", async (req, res) => {
-  const eventId = req.params.eventId;
-  const fileRelatorio = getFileName("nomes-sorteados.txt", eventId);
-  const fileLista = getFileName("lista.txt", eventId);
-  const fileStaffs = getFileName("staffs.txt", eventId);
+// --- PDF DOWNLOAD (VERSÃO ESTILIZADA E PROFISSIONAL) ---
+app.get("/relatorio/download", async (req, res) => {
+  const fileRelatorio = "nomes-sorteados.txt";
+  const fileLista = "lista.txt";
+  const fileStaffs = "staffs.txt";
   const txtFilePath = path.join(__dirname, "uploads", fileRelatorio);
 
   if (!fs.existsSync(txtFilePath))
@@ -414,55 +468,160 @@ app.get("/:eventId/relatorio/download", async (req, res) => {
       staffs = await readFile(fileStaffs);
     } catch (e) {}
 
-    const styleConfig = loadStyleConfig(eventId);
-    const doc = new PDFDocument({ size: "A4", margin: 50 });
+    const styleConfig = loadStyleConfig();
+
+    // Habilitamos o bufferPages para podermos colocar número de página no rodapé depois
+    const doc = new PDFDocument({ size: "A4", margin: 50, bufferPages: true });
 
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename=relatorio_${eventId}.pdf`,
+      `attachment; filename=Relatorio_Sorteio.pdf`,
     );
     res.setHeader("Content-Type", "application/pdf");
 
     doc.pipe(res);
+
+    // Cores padrão do layout
+    const primaryColor = "#374667"; // Azul do painel
+    const textColor = "#333333";
+    const lightGray = "#f4f6f9";
+    const darkGray = "#888888";
+
+    // --- CABEÇALHO ---
     doc
-      .fontSize(18)
-      .font("Times-Bold")
-      .text(styleConfig.title, { align: "center" });
-    doc.moveDown(0.5);
+      .fillColor(primaryColor)
+      .fontSize(22)
+      .font("Helvetica-Bold")
+      .text(styleConfig.title || "Relatório de Sorteio", { align: "center" });
+
+    doc.moveDown(0.2);
+
     doc
-      .fontSize(12)
-      .font("Times-Roman")
-      .text(`Total de Convidados: ${nomesTotal.length}`);
+      .fillColor(darkGray)
+      .fontSize(10)
+      .font("Helvetica")
+      .text(`Gerado em: ${new Date().toLocaleString("pt-BR")}`, {
+        align: "center",
+      });
+
+    doc.moveDown(1.5);
+
+    // Linha Divisória
+    doc
+      .moveTo(50, doc.y)
+      .lineTo(545, doc.y)
+      .strokeColor("#e0e0e0")
+      .lineWidth(1)
+      .stroke();
+    doc.moveDown(1);
+
+    // --- BLOCO DE RESUMO ---
     const totalGanhadores = linhas.filter(
       (l) => !l.includes("--- RODADA"),
     ).length;
-    doc.text(`Total de Staffs: ${staffs.trim()}`);
-    doc.text(`Total de Sorteados: ${totalGanhadores}`);
+
+    doc
+      .fillColor(primaryColor)
+      .fontSize(14)
+      .font("Helvetica-Bold")
+      .text("Resumo Numérico");
+    doc.moveDown(0.5);
+
+    // Alinhamento em colunas falsas para o resumo
+    doc.fillColor(textColor).fontSize(11).font("Helvetica-Bold");
+    doc
+      .text("Convidados:", 50, doc.y, { continued: true })
+      .font("Helvetica")
+      .text(`  ${nomesTotal.length}`);
+    doc
+      .font("Helvetica-Bold")
+      .text("Staffs:", 50, doc.y, { continued: true })
+      .font("Helvetica")
+      .text(`  ${staffs.trim()}`);
+    doc
+      .font("Helvetica-Bold")
+      .text("Total Sorteados:", 50, doc.y, { continued: true })
+      .font("Helvetica")
+      .text(`  ${totalGanhadores}`);
+
     doc.moveDown(1);
 
+    // Linha Divisória
+    doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor("#e0e0e0").stroke();
+    doc.moveDown(1.5);
+
+    // --- LISTA DE GANHADORES ---
     let contadorGanhadores = 1;
+
     linhas.forEach((linha) => {
       const textoLimpo = linha.trim();
+
       if (textoLimpo.startsWith("--- RODADA")) {
-        doc.moveDown(1);
+        // Se a página estiver muito no final, pula para a próxima para não cortar a rodada
+        if (doc.y > 700) doc.addPage();
+        else doc.moveDown(1);
+
+        const startY = doc.y;
+
+        // Desenha um retângulo cinza claro de fundo para o título da rodada
+        doc.rect(50, startY, 495, 25).fill(lightGray);
+
+        // Escreve o texto centralizado dentro do retângulo
         doc
-          .font("Times-Bold")
-          .fontSize(14)
-          .text(textoLimpo.replace(/---/g, "").trim(), { underline: true });
-        doc.fontSize(12).font("Times-Roman");
+          .fillColor(primaryColor)
+          .font("Helvetica-Bold")
+          .fontSize(12)
+          .text(textoLimpo.replace(/---/g, "").trim(), 50, startY + 7, {
+            align: "center",
+            width: 495,
+          });
+
+        // Volta a margem Y para baixo do retângulo
+        doc.y = startY + 35;
       } else if (textoLimpo.includes(" - ")) {
         const [nome, premio] = textoLimpo.split(" - ");
+
+        // Nome em negrito, prêmio em fonte normal e cinza escuro
         doc
-          .font("Times-Bold")
-          .text(`${contadorGanhadores}. ${nome}`, { continued: true });
-        doc.font("Times-Roman").text(` ➔ Prêmio: ${premio}`);
+          .fillColor(textColor)
+          .font("Helvetica-Bold")
+          .fontSize(11)
+          .text(`${contadorGanhadores}. ${nome}`, 50, doc.y, {
+            continued: true,
+          });
+
+        doc
+          .fillColor(darkGray)
+          .font("Helvetica")
+          .text(`   ➔   Prêmio: ${premio}`);
+
         contadorGanhadores++;
+        doc.moveDown(0.3);
       } else {
-        doc.text(`${contadorGanhadores}. ${textoLimpo}`);
+        doc
+          .fillColor(textColor)
+          .font("Helvetica")
+          .fontSize(11)
+          .text(`${contadorGanhadores}. ${textoLimpo}`, 50, doc.y);
+
         contadorGanhadores++;
+        doc.moveDown(0.3);
       }
-      doc.moveDown(0.3);
     });
+
+    // --- RODAPÉ (NUMERAÇÃO DE PÁGINAS) ---
+    // AQUI ESTÁ A CORREÇÃO DA SINTAXE DO 'FOR'
+    const range = doc.bufferedPageRange();
+    for (let i = range.start; i < range.start + range.count; i++) {
+      doc.switchToPage(i);
+      doc
+        .fontSize(9)
+        .fillColor("#aaaaaa")
+        .text(`Página ${i + 1} de ${range.count}`, 50, doc.page.height - 40, {
+          align: "center",
+          width: 495,
+        });
+    }
 
     doc.end();
   } catch (error) {
