@@ -259,7 +259,12 @@ app.get("/sortear/:quantidade", async (req, res) => {
     for (let i = 0; i < brindesDisponiveis.length; i++) {
       if (countPremios >= quantidade) break;
       const b = brindesDisponiveis[i];
-      if (!b.nome.startsWith("-") && !b.nome.startsWith("=")) {
+
+      // Remove espaços em branco invisíveis do início e fim antes da checagem
+      const nomeTratado = b.nome.trim();
+
+      // Verifica se a string limpa não é um divisor de rodada
+      if (!nomeTratado.startsWith("-") && !nomeTratado.startsWith("=")) {
         premiosDestaRodada.push(b);
         countPremios++;
       }

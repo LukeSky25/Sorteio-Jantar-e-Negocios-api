@@ -107,22 +107,22 @@
     {
         "id": 22,
         "nome": "Voucher El Uruguayo",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 23,
         "nome": "Cesta com Produtos Da Terrinha ",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 24,
         "nome": "Cesta com Produtos Da Terrinha",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 25,
         "nome": "Voucher Pizza La Ville",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 26,
@@ -132,22 +132,22 @@
     {
         "id": 27,
         "nome": "Voucher Coco Bambu",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 28,
         "nome": "Voucher A Quinta do Marquês",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 29,
         "nome": "Voucher Maremonti",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 30,
         "nome": "Voucher Empório Ferreira",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 31,
@@ -157,22 +157,22 @@
     {
         "id": 32,
         "nome": "Cesta com Produtos da Solumar",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 33,
         "nome": "Cesta com Produtos da Solumar",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 34,
         "nome": "Voucher Pequenas Delicias",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 35,
         "nome": "Voucher Dra. Andréia",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 36,
@@ -182,22 +182,22 @@
     {
         "id": 37,
         "nome": "teste1",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 38,
         "nome": "teste2",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 39,
         "nome": "teste3",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 40,
         "nome": "teste4",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 41,
@@ -207,21 +207,21 @@
     {
         "id": 42,
         "nome": "teste5",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 43,
         "nome": "teste6",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 44,
         "nome": "teste7",
-        "disponivel": false
+        "disponivel": true
     },
     {
         "id": 45,
         "nome": "teste8",
-        "disponivel": false
+        "disponivel": true
     }
 ]
